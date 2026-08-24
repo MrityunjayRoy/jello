@@ -3,19 +3,10 @@ import express from "express";
 
 const app = express()
 
-app.use(express.json())
-
-app.post("/signup", async(req, res) => {
-    const {username} = req.body
-    const user = await prisma.user.create({
-        data: {
-            name: username
-        }
-    })
-
-    res.json({
-        user: user
-    })
+app.get("/", (req, res) => {
+    res.send("hello")
 })
 
-app.listen(4000)
+app.listen(3003, () => {
+    console.log("The server started at port 3003")
+})
