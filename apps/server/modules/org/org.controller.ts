@@ -1,0 +1,55 @@
+import type { Request, Response } from "express";
+import { createOrgSchema, updateOrgSchema } from "./org.model";
+import * as orgServices from "./org.service"
+
+export const createOrg = async (req: Request, res: Response): Promise<void> => {
+    const input = createOrgSchema.parse(req.body)
+    const org = orgServices.createOrg(req.user!.id, input)
+
+    res.status(201).json({
+        'message': "Created Org Sucessfully",
+        "data": org
+    })
+}
+
+export const getMyOrgs = async (req: Request, res: Response): Promise<void> => {
+    const orgs = orgServices.getMyOrgs(req.user!.id)
+
+    res.status(201).json({
+        'message': "All orgs by user extracted.",
+        "data": orgs
+    })
+}
+
+export const getOrg = async (req: Request, res: Response): Promise<void> => {
+    //TODO: validate orgID
+    const orgID = req.body
+    const org = orgServices.getOrg(orgID, req.user!.id)
+
+    res.status(201).json({
+        'message': "Org extracted successfully",
+        "data": org
+    })
+}
+
+export const updateOrg = async (req: Request, res: Response): Promise<void> => {
+    //TODO: orgId fix
+    const orgID = req.body
+    const input = updateOrgSchema.parse(req.body)
+    const org = orgServices.updateOrg(req.user!.id, orgID, input)
+
+    res.status(201).json({
+        'message': "Updated Org Successfully",
+        "data": org
+    })
+}
+
+export const deleteOrg = async (req: Request, res: Response): Promise<void> => {
+    //TODO: orgId fix
+    const orgID = req.body
+    orgServices.deleteOrg(orgID)
+
+    res.status(201).json({
+        'message': "Org Deleted successfully",
+    })
+}

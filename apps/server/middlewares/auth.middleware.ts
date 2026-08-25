@@ -15,8 +15,6 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
         }
 
         req.user = session.user
-        req.session = session.session
-
         next()
     } catch (error) {
         return res.status(401).json({
