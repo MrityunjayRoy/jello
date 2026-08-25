@@ -8,14 +8,19 @@
     "start": "bun index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19"
   },
   "peerDependencies": {
     "typescript": "^5"
-},
+  },
   "dependencies": {
+    "@better-auth/prisma-adapter": "^1.7.1",
     "@types/express": "^5.0.6",
-    "express": "^5.2.1",
-    "db": "*"
+    "auth": "*",
+    "better-auth": "^1.7.1",
+    "cors": "^2.8.6",
+    "db": "*",
+    "express": "^5.2.1"
   }
 }
