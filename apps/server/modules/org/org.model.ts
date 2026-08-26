@@ -13,5 +13,6 @@ export const updateOrgSchema = z.object({
 })
 
 export type Role = "MEMBER" | "ADMIN"
+export const orgIDSchema = z.uuid()
 export type CreateOrgInput = z.infer<typeof createOrgSchema>
 export type UpdateOrgInput = z.infer<typeof updateOrgSchema>

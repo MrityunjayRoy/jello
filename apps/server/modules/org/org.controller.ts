@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { createOrgSchema, updateOrgSchema } from "./org.model";
+import { createOrgSchema, orgIDSchema, updateOrgSchema } from "./org.model";
 import * as orgServices from "./org.service"
 
 export const createOrg = async (req: Request, res: Response): Promise<void> => {
@@ -22,8 +22,7 @@ export const getMyOrgs = async (req: Request, res: Response): Promise<void> => {
 }
 
 export const getOrg = async (req: Request, res: Response): Promise<void> => {
-    //TODO: validate orgID
-    const orgID = req.body
+    const orgID = orgIDSchema.parse(req.body)
     const org = orgServices.getOrg(orgID, req.user!.id)
 
     res.status(201).json({
@@ -33,8 +32,7 @@ export const getOrg = async (req: Request, res: Response): Promise<void> => {
 }
 
 export const updateOrg = async (req: Request, res: Response): Promise<void> => {
-    //TODO: orgId fix
-    const orgID = req.body
+    const orgID = orgIDSchema.parse(req.params.orgId)
     const input = updateOrgSchema.parse(req.body)
     const org = orgServices.updateOrg(req.user!.id, orgID, input)
 
@@ -45,8 +43,7 @@ export const updateOrg = async (req: Request, res: Response): Promise<void> => {
 }
 
 export const deleteOrg = async (req: Request, res: Response): Promise<void> => {
-    //TODO: orgId fix
-    const orgID = req.body
+    const orgID = orgIDSchema.parse(req.body)
     orgServices.deleteOrg(orgID)
 
     res.status(201).json({
