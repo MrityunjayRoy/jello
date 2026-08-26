@@ -3,6 +3,9 @@ import type { CreateOrgInput, Role, UpdateOrgInput } from "./org.model"
 
 const assertRole = async (userID: string, orgID: string, roles: Role[]) => {
     const membership = await orgRepos.getMembership(userID, orgID);
+    if (!membership) {
+        throw new Error("The user is not assiated with the org")
+    }
 }
 
 export const createOrg = (userID:string, input: CreateOrgInput) => 
@@ -20,7 +23,7 @@ export const getOrg = async (orgID:string, userID: string) => {
     await assertRole(userID, orgID, ["ADMIN", "MEMBER"])
     const org = await orgRepos.findOrgById(orgID)
     if(!org) {
-
+        throw new Error("Organization with OrgID doesnt exists!")
     }
     return org
 }

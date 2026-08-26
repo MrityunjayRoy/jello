@@ -4,7 +4,7 @@ import * as orgServices from "./org.service"
 
 export const createOrg = async (req: Request, res: Response): Promise<void> => {
     const input = createOrgSchema.parse(req.body)
-    const org = orgServices.createOrg(req.user!.id, input)
+    const org = await orgServices.createOrg(req.user!.id, input)
 
     res.status(201).json({
         'message': "Created Org Sucessfully",
@@ -13,7 +13,7 @@ export const createOrg = async (req: Request, res: Response): Promise<void> => {
 }
 
 export const getMyOrgs = async (req: Request, res: Response): Promise<void> => {
-    const orgs = orgServices.getMyOrgs(req.user!.id)
+    const orgs = await orgServices.getMyOrgs(req.user!.id)
 
     res.status(201).json({
         'message': "All orgs by user extracted.",
@@ -23,7 +23,7 @@ export const getMyOrgs = async (req: Request, res: Response): Promise<void> => {
 
 export const getOrg = async (req: Request, res: Response): Promise<void> => {
     const orgID = orgIDSchema.parse(req.body)
-    const org = orgServices.getOrg(orgID, req.user!.id)
+    const org = await orgServices.getOrg(orgID, req.user!.id)
 
     res.status(201).json({
         'message': "Org extracted successfully",
@@ -34,7 +34,7 @@ export const getOrg = async (req: Request, res: Response): Promise<void> => {
 export const updateOrg = async (req: Request, res: Response): Promise<void> => {
     const orgID = orgIDSchema.parse(req.params.orgId)
     const input = updateOrgSchema.parse(req.body)
-    const org = orgServices.updateOrg(req.user!.id, orgID, input)
+    const org = await orgServices.updateOrg(req.user!.id, orgID, input)
 
     res.status(201).json({
         'message': "Updated Org Successfully",
@@ -44,7 +44,7 @@ export const updateOrg = async (req: Request, res: Response): Promise<void> => {
 
 export const deleteOrg = async (req: Request, res: Response): Promise<void> => {
     const orgID = orgIDSchema.parse(req.body)
-    orgServices.deleteOrg(orgID)
+    await orgServices.deleteOrg(orgID)
 
     res.status(201).json({
         'message': "Org Deleted successfully",
