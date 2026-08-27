@@ -1,5 +1,6 @@
 import * as boardRepos from "./board.repo"
 import type { UpdateBoardInput, CreateBoardInput } from "./board.model"
+import { err, NotFoundError } from "errors"
 
 export const createBoard = (input: CreateBoardInput) =>
     boardRepos.createBoard(input)
@@ -13,8 +14,8 @@ export const getBoardByOrgId = (orgID: string) =>
 
 export const getBoard = async (boardID: string) => {
     const board = await boardRepos.findBoardById(boardID)
-    if (!board) {
-        throw new Error(`No board found with boardID: ${boardID}`)
+    if (!board.success || !board.data) {
+        return err(new NotFoundError({ message: `No board found with boardID: ${boardID}` }))
     }
     return board
 }

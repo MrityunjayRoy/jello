@@ -1,6 +1,7 @@
 import { auth } from "auth/client"
 import { fromNodeHeaders } from "better-auth/node"
 import { type NextFunction, type Request, type Response } from "express"
+import { InternalServerError, UnauthorizedError } from "errors"
 
 export const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -10,15 +11,18 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
 
         if (!session) {
             return res.status(401).json({
-                error: "Unauthorized",
+                error: new UnauthorizedError().message,
+                code: "UNAUTHORIZED",
             })
         }
 
         req.user = session.user
         next()
     } catch (error) {
-        return res.status(401).json({
-            error: "Unauthorized",
+        const err = new InternalServerError({ cause: error })
+        return res.status(err.status).json({
+            error: err.message,
+            code: err.code,
         })
     }
 }

@@ -1,5 +1,6 @@
 import { prisma } from "db/client"
 import { type NextFunction, type Request, type Response } from "express"
+import { BadRequestError, ForbiddenError, InternalServerError, NotFoundError } from "errors"
 
 export const requireOrgMember = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -13,14 +14,20 @@ export const requireOrgMember = async (req: Request, res: Response, next: NextFu
             })
 
             if (!board) {
-                return res.status(404).json({ error: "Board not found" })
+                return res.status(404).json({
+                    error: new NotFoundError({ message: "Board not found" }).message,
+                    code: "NOT_FOUND",
+                })
             }
 
             orgID = board.orgID
         }
 
         if (!orgID) {
-            return res.status(400).json({ error: "Org ID is required" })
+            return res.status(400).json({
+                error: new BadRequestError({ message: "Org ID is required" }).message,
+                code: "BAD_REQUEST",
+            })
         }
 
         const membership = await prisma.membership.findUnique({
@@ -28,11 +35,18 @@ export const requireOrgMember = async (req: Request, res: Response, next: NextFu
         })
 
         if (!membership) {
-            return res.status(403).json({ error: "Not a member of this org" })
+            return res.status(403).json({
+                error: new ForbiddenError({ message: "Not a member of this org" }).message,
+                code: "FORBIDDEN",
+            })
         }
 
         next()
     } catch (error) {
-        return res.status(500).json({ error: "Internal server error" })
+        const err = new InternalServerError({ cause: error })
+        return res.status(err.status).json({
+            error: err.message,
+            code: err.code,
+        })
     }
 }

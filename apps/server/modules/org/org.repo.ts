@@ -1,37 +1,38 @@
 import { prisma } from "db/client"
-import { updateOrgSchema, type CreateOrgInput, type UpdateOrgInput } from "./org.model"
+import { type CreateOrgInput, type UpdateOrgInput } from "./org.model"
+import { fromPrisma } from "../../utils/fromPrisma"
 
-export const createOrg = async (creatorID: string, data: CreateOrgInput) =>
-    await prisma.org.create({
+export const createOrg = (creatorID: string, data: CreateOrgInput) =>
+    fromPrisma(() => prisma.org.create({
         data: {
             ...data,
             memberships: {
                 create: { userID: creatorID, role: "ADMIN" }
             }
         }
-    })
+    }))
 
 export const findOrgById = (id: string) =>
-    prisma.org.findUnique({ where: { id } });
+    fromPrisma(() => prisma.org.findUnique({ where: { id } }))
 
 export const findOrgByUserId = (userId: string) =>
-    prisma.org.findMany({
+    fromPrisma(() => prisma.org.findMany({
         where: { memberships: { some: { userID: userId } } },
         orderBy: { name: 'asc' }
-    })
+    }))
 
 export const updateOrg = (id: string, data: UpdateOrgInput) =>
-    prisma.org.update({
+    fromPrisma(() => prisma.org.update({
         where: { id },
         data
-    })
+    }))
 
 export const deleteOrg = (id: string) =>
-    prisma.org.delete({
+    fromPrisma(() => prisma.org.delete({
         where: { id }
-    })
+    }))
 
 export const getMembership = (userId: string, orgId: string) =>
-    prisma.membership.findUnique({
+    fromPrisma(() => prisma.membership.findUnique({
         where: { userID_orgID: { userID: userId, orgID: orgId } }
-    })
+    }))
